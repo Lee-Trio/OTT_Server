@@ -21,11 +21,16 @@ export const contentsFinderWithMultiNumber = (dataNumbers) => {
   const dataNumber = dataNumbers.split(",");
   const result = new Array();
   for (let i = 0; i < dataNumber.length; i++) {
-    if (0 <= dataNumber[i] && dataNumber[i] <= tempData.length) {
-      result.push(tempData[dataNumber[i]]);
-    } else {
-      result.push("noData");
-    }
+    result.push(contentsFinderWithNumber(dataNumber[i]));
+  }
+  return result;
+};
+
+export const contentsFinderWithMultiTitle = (dataTitles) => {
+  const dataTitle = dataTitles.split(",");
+  const result = new Array();
+  for (let i = 0; i < dataTitle.length; i++) {
+    result.push(contentsFinderWithTitle(dataTitle[i]));
   }
   return result;
 };

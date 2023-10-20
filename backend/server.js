@@ -8,6 +8,7 @@ import {
   contentsFinderWithNumber,
   contentsFinderWithTitle,
   contentsFinderWithMultiNumber,
+  contentsFinderWithMultiTitle,
 } from "./contentsFinder.js";
 const swaggerSpec = swaggerJsdoc(options);
 const app = express();
@@ -45,7 +46,13 @@ app.get("/oneDataWithTitle", (req, res) => {
 app.get("/multiDataWithNumber", (req, res) => {
   const dataNumbers = req.query.dataNumbers;
   const result = contentsFinderWithMultiNumber(dataNumbers);
-  res.send(result.toString());
+  res.send(result);
+});
+
+app.get("/multiDataWithTitle", (req, res) => {
+  const dataTitles = req.query.dataTitles;
+  const result = contentsFinderWithMultiTitle(dataTitles);
+  res.send(result);
 });
 
 app.listen(3000); // 기다린다는 말
