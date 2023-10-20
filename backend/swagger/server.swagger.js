@@ -7,5 +7,4 @@
  *     responses:
  *       200:
  *         description: "pong"
- *
  */
