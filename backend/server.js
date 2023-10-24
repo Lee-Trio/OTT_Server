@@ -31,7 +31,7 @@ app.get("/allDataCount", (req, res) => {
   res.send("총 갯수는: " + result);
 });
 
-app.get("/oneData", (req, res) => {
+app.get("/oneDataWithNumber", (req, res) => {
   const dataNumber = req.query.dataNumber;
   const result = contentsFinderWithNumber(dataNumber);
   res.send(result);
@@ -43,13 +43,13 @@ app.get("/oneDataWithTitle", (req, res) => {
   res.send(result);
 });
 
-app.get("/multiDataWithNumber", (req, res) => {
+app.get("/multiDataWithNumbers", (req, res) => {
   const dataNumbers = req.query.dataNumbers;
   const result = contentsFinderWithMultiNumber(dataNumbers);
   res.send(result);
 });
 
-app.get("/multiDataWithTitle", (req, res) => {
+app.get("/multiDataWithTitles", (req, res) => {
   const dataTitles = req.query.dataTitles;
   const result = contentsFinderWithMultiTitle(dataTitles);
   res.send(result);
