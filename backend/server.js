@@ -3,13 +3,14 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { options } from "./swagger/config.js";
 import cors from "cors";
-import { tempData } from "./temp_data.js";
+import { tempData } from "./data/temp_data.js";
 import {
   contentsFinderWithNumber,
   contentsFinderWithTitle,
   contentsFinderWithMultiNumber,
   contentsFinderWithMultiTitle,
 } from "./contentsFinder.js";
+import { rankingData } from "./rankingPop.js";
 const swaggerSpec = swaggerJsdoc(options);
 const app = express();
 app.use(express.json()); // 과거에는 bodyParser 사용
@@ -55,4 +56,10 @@ app.get("/multiDataWithTitles", (req, res) => {
   res.send(result);
 });
 
-app.listen(3000); // 기다린다는 말
+app.get("/rankingData", (req, res) => {
+  const company = req.query.company;
+  const result = rankingData(company);
+  res.send(result);
+});
+
+app.listen(4000); // 기다린다는 말

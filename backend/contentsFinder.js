@@ -1,4 +1,4 @@
-import { tempData } from "./temp_data.js";
+import { tempData } from "./data/temp_data.js";
 
 export const contentsFinderWithNumber = (dataNumber) => {
   if (0 <= dataNumber && dataNumber <= tempData.length) {
