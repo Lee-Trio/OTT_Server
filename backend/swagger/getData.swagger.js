@@ -1,6 +1,6 @@
 /**
  * @swagger
- *  /oneDataWithNumber:
+ * /oneDataWithNumber:
  *   get:
  *     summary: 하나의 콘텐츠 데이터 가져오기
  *     tags: [getData]
@@ -276,6 +276,35 @@
  *                   original:
  *                     type: Number
  *                     example: 0
+ * /rankingData:
+ *   get:
+ *     summary: 각 OTT별 랭킹를 가져옴
+ *     tags: [getData]
+ *     parameters:
+ *       - in: 가져올 OTT 입력 예1) disney 예2) netflix 예3) watcha 예4) tving
+ *         name: company
+ *         type: String
+ *     responses:
+ *       200:
+ *         description: 성공한 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 properties:
+ *                   title:
+ *                     type: String
+ *                     example: "러블리 라이터"
+ *                   href:
+ *                     type: URL
+ *                     example: https://www.tving.com/contents/P001616613
+ *                   img:
+ *                     type: URL
+ *                     example: https://image.tving.com/upload/cms/caip/CAIP0900/P001616613.jpg/dims/resize/480
+ *                   OTT:
+ *                     type: String
+ *                     example: TVING
  * /allDataCount:
  *   get:
  *     summary: 콘텐츠 갯수 가져오기

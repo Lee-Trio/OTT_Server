@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { options } from "./swagger/config.js";
@@ -9,8 +9,15 @@ import {
   contentsFinderWithTitle,
   contentsFinderWithMultiNumber,
   contentsFinderWithMultiTitle,
-} from "./contentsFinder.js";
-import { rankingData } from "./rankingPop.js";
+} from "./getData/contentsFinder.js";
+import { rankingData } from "./getData/rankingPop.js";
+import { readFile } from "fs/promises";
+
+// const data = await readFile("./contents_data/all_data.json", "utf8");
+const all_data = JSON.parse(
+  await readFile("./contents_data/all_data.json", "utf8")
+);
+
 const swaggerSpec = swaggerJsdoc(options);
 const app = express();
 app.use(express.json()); // 과거에는 bodyParser 사용
@@ -62,4 +69,24 @@ app.get("/rankingData", (req, res) => {
   res.send(result);
 });
 
-app.listen(4000); // 기다린다는 말
+app.get("/rankingDataTemp", (req, res) => {
+  const company = req.query.company;
+  const rankData = rankingData(company);
+  const result = [];
+
+  for (let i = 0; i < rankData.length; i++) {
+    console.log(rankData[i].title);
+    console.log(contentsFinderWithTitle(rankData[i].title));
+    result.push(rankData[i].ranking);
+  }
+
+  console.log(result);
+  res.send(result);
+});
+
+app.get("/all_data", (req, res) => {
+  console.log(all_data.length);
+  res.send(all_data);
+});
+
+app.listen(3000); // 기다린다는 말
