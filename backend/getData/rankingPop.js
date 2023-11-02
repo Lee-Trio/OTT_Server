@@ -2,21 +2,7 @@ import { tving } from "../data/TvingRanking.js";
 import { disneyPlus } from "../data/disneyPlusRanking.js";
 import { netflix } from "../data/netflixRanking.js";
 import { watcha } from "../data/WatchaRanking.js";
-
-import { readFile } from "fs/promises";
-const all_data = JSON.parse(
-  await readFile("./contents_data/all_data.json", "utf8")
-);
-
-// const rank
-
-const isNull = (ranking) => {
-  if (ranking.length === 0) {
-    return true;
-  } else {
-    return false;
-  }
-};
+import isNull from "../tools/isNull.js";
 
 export const rankingData = (company) => {
   switch (company) {

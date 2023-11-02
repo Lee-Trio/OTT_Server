@@ -13,6 +13,8 @@ import {
 import { rankingData } from "./getData/rankingPop.js";
 import { readFile } from "fs/promises";
 
+import { ranking_Data } from "./getData/ranking.js";
+
 // const data = await readFile("./contents_data/all_data.json", "utf8");
 const all_data = JSON.parse(
   await readFile("./contents_data/all_data.json", "utf8")
@@ -63,11 +65,11 @@ app.get("/multiDataWithTitles", (req, res) => {
   res.send(result);
 });
 
-app.get("/rankingData", (req, res) => {
-  const company = req.query.company;
-  const result = rankingData(company);
-  res.send(result);
-});
+// app.get("/rankingData", (req, res) => {
+//   const company = req.query.company;
+//   const result = rankingData(company);
+//   res.send(result);
+// });
 
 app.get("/rankingDataTemp", (req, res) => {
   const company = req.query.company;
@@ -85,8 +87,14 @@ app.get("/rankingDataTemp", (req, res) => {
 });
 
 app.get("/all_data", (req, res) => {
-  console.log(all_data.length);
   res.send(all_data);
+});
+
+app.get("/rankingData", (req, res) => {
+  const company = req.query.company;
+  const type = req.query.type;
+  const result = ranking_Data(company, type);
+  res.send(result);
 });
 
 app.listen(3000); // 기다린다는 말
