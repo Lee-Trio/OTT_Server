@@ -10,6 +10,7 @@ import { options } from "./swagger/config.js";
 // router list
 import searchRouter from "./routes/search.js";
 import rankingRouter from "./routes/ranking.js";
+import checkRouter from "./routes/check.js";
 import testRouter from "./routes/test.js";
 import tempRouter from "./routes/temp.js";
 
@@ -26,9 +27,10 @@ const swaggerSpec = swaggerJsdoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/search", searchRouter);
 app.use("/ranking", rankingRouter);
+app.use("/check", checkRouter);
 app.use("/test", testRouter);
 app.use("/temp", tempRouter);
 
 app.listen(port, () => {
   console.log("Start Today Ott Server...");
-}); // 기다린다는 말
+});
