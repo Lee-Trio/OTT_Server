@@ -1,5 +1,5 @@
 import { readFile } from "fs/promises";
-import isNull from "./isNull.js";
+import isNull from "../tools/isNull.js";
 
 const all_data = JSON.parse(
   await readFile("./contents_data/all_data.json", "utf8")
@@ -14,7 +14,7 @@ export const search = (searchString) => {
       result.push(all_data[i]);
     }
   }
-  if (result.length <= 0) {
+  if (isNull(result)) {
     return "noData exit:search";
   } else {
     return result;

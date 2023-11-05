@@ -1,7 +1,7 @@
-import { tving } from "../data/TvingRanking.js";
-import { disneyPlus } from "../data/disneyPlusRanking.js";
-import { netflix } from "../data/netflixRanking.js";
-import { watcha } from "../data/WatchaRanking.js";
+// import { tving } from "../data/TvingRanking.js";
+// import { disneyPlus } from "../data/disneyPlusRanking.js";
+// import { netflix } from "../data/netflixRanking.js";
+// import { watcha } from "../data/WatchaRanking.js";
 import isNull from "../tools/isNull.js";
 
 export const rankingData = (company) => {

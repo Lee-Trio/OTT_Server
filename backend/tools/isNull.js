@@ -3,6 +3,5 @@ export default function (data) {
     return true;
   } else {
     return false;
-    z;
   }
 }
