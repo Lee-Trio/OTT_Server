@@ -15,6 +15,8 @@ import { readFile } from "fs/promises";
 
 import { ranking_Data } from "./getData/ranking.js";
 
+import { search } from "./tools/search.js";
+
 // const data = await readFile("./contents_data/all_data.json", "utf8");
 const all_data = JSON.parse(
   await readFile("./contents_data/all_data.json", "utf8")
@@ -94,6 +96,12 @@ app.get("/rankingData", (req, res) => {
   const company = req.query.company;
   const type = req.query.type;
   const result = ranking_Data(company, type);
+  res.send(result);
+});
+
+app.get("/search", (req, res) => {
+  const searchString = req.query.searchString;
+  const result = search(searchString);
   res.send(result);
 });
 

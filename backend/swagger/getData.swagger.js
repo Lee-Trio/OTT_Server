@@ -281,8 +281,11 @@
  *     summary: 각 OTT별 랭킹를 가져옴
  *     tags: [getData]
  *     parameters:
- *       - in: 가져올 OTT 입력 예1) disney 예2) netflix 예3) watcha 예4) tving
+ *       - in: 가져올 OTT 입력 예1) Disney Plus 예2) Netflix 예3) Watcha 예4) TVING
  *         name: company
+ *         type: String
+ *       - in: 가져올 type 입력 예1) all 예2) tv 예3) movie
+ *         name: type
  *         type: String
  *     responses:
  *       200:
