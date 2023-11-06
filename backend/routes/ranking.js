@@ -1,11 +1,11 @@
 import express from "express";
-import { ranking_Data } from "../getData/ranking.js";
+import { rankingSplitCompany } from "../tools/rankingSplitCompany.js";
 const router = express.Router();
 
 router.get("/rankingData", (req, res) => {
   const company = req.query.company;
   const type = req.query.type;
-  const result = ranking_Data(company, type);
+  const result = rankingSplitCompany(company, type);
   res.send(result);
 });
 
