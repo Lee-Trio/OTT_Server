@@ -203,7 +203,7 @@
  *     responses:
  *       200:
  *         description: coming soon
- * /DisneyPlusTVSeries:
+ * /check/DisneyPlusTVSeries:
  *   get:
  *     summary: 디즈니 플러스 TV 시리즈 데이터를 가져옴
  *     tags: [check]
