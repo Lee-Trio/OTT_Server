@@ -74,6 +74,7 @@ const tvSeriesRankingData = JSON.parse(
 
 export const dataSelect = (type1, type2) => {
   // type1 : movie or tv or all or ranking
+  // type2 : company or ranking ( tv, movie, all )
   switch (type1) {
     case "all":
       return all_data;
