@@ -1,5 +1,8 @@
 import express from "express";
-import { title as searchTitle, number as searchNumber } from "../search.js";
+import {
+  title as searchTitle,
+  number as searchNumber,
+} from "../tools/dataSearch.js";
 const router = express.Router();
 
 // all data search

@@ -1,5 +1,5 @@
 import isNull from "./isNull.js";
-import { dataSelect } from "./data_select.js";
+import { dataSelect } from "./dataSelect.js";
 
 export const rankingSplitCompany = (company, type) => {
   const data = dataSelect("ranking", type);
