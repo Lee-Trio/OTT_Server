@@ -3,7 +3,6 @@ import { dataSelect } from "./dataSelect.js";
 
 export const rankingSplitCompany = (company, type) => {
   const data = dataSelect("ranking", type);
-  console.log(data);
   const object = new Array();
 
   for (let i = 0; i < data.length; i++) {
