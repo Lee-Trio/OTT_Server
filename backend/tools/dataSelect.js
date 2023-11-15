@@ -57,7 +57,7 @@ const movieRankingData = JSON.parse(
 );
 const rankingData = JSON.parse(
   await readFile(
-    "/home/projectpc/teamProject/backend/contents_data/ranking/ranking_data.json",
+    "/home/projectpc/teamProject/backend/contents_data/ranking/ranking_union.json",
     "utf8"
   )
 );
