@@ -2,7 +2,7 @@
  * @swagger
  * /check/all_data:
  *   get:
- *     summary:
+ *     summary: 전체 데이터를 가져옴
  *     tags: [check]
  *     responses:
  *       200:

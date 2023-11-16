@@ -13,6 +13,7 @@ import rankingRouter from "./routes/ranking.js";
 import checkRouter from "./routes/check.js";
 import testRouter from "./routes/test.js";
 import tempRouter from "./routes/temp.js";
+import dataInputRouter from "./routes/dataInput.js";
 
 // port number
 const port = 3000;
@@ -30,6 +31,7 @@ app.use("/ranking", rankingRouter);
 app.use("/check", checkRouter);
 app.use("/test", testRouter);
 app.use("/temp", tempRouter);
+app.use("/dataInput", dataInputRouter);
 
 app.listen(port, () => {
   console.log("Start Today Ott Server...");
