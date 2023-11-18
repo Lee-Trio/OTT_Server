@@ -2,7 +2,7 @@ import express from "express";
 import {
   title as searchTitle,
   number as searchNumber,
-} from "../tools/dataSearch.js";
+} from "../toolsJson/dataSearch.js";
 const router = express.Router();
 
 // all data search

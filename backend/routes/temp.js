@@ -5,7 +5,7 @@ import {
   contentsFinderWithTitle,
   contentsFinderWithMultiNumber,
   contentsFinderWithMultiTitle,
-} from "../tools/tempContentsFinder.js";
+} from "../toolsJson/tempContentsFinder.js";
 import { rankingData } from "../tempData/rankingPop.js";
 
 const all_data = JSON.parse(

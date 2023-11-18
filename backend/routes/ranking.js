@@ -1,5 +1,5 @@
 import express from "express";
-import { rankingSplitCompany } from "../tools/rankingSplitCompany.js";
+import { rankingSplitCompany } from "../toolsJson/rankingSplitCompany.js";
 const router = express.Router();
 
 router.get("/rankingData", (req, res) => {

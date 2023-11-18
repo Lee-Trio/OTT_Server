@@ -1,6 +1,6 @@
-import isNull from "../tools/isNull.js";
+import isNull from "../toolsJson/isNull.js";
 
-import { rankingSplitCompany } from "../tools/rankingSplitCompany.js";
+import { rankingSplitCompany } from "../toolsJson/rankingSplitCompany.js";
 
 export const ranking_Data = (company, type) => {
   const object = rankingSplitCompany(company, type);
