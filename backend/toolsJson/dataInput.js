@@ -55,7 +55,7 @@ const rankDataCreate = async (jsonData) => {
   }
 };
 
-const allDataCreate = async (jsonData) => {
+export const allDataCreate = async (jsonData) => {
   const dataPath = __dirname + "/contents_data";
   const jsonString = JSON.stringify(jsonData);
   const movieDisney = new Array();
@@ -97,16 +97,16 @@ const allDataCreate = async (jsonData) => {
       else if (data[i].mt === "tvSeries")
         switch (data[i].ott) {
           case "Disney Plus":
-            tvSeriesDisneyDisney.push(data[i]);
+            tvSeriesDisney.push(data[i]);
             break;
           case "Netflix":
-            tvSeriesNetflixNetflix.push(data[i]);
+            tvSeriesNetflix.push(data[i]);
             break;
           case "Watcha":
-            tvSeriesWatchaWatcha.push(data[i]);
+            tvSeriesWatcha.push(data[i]);
             break;
           case "TVING":
-            tvSeriesTvingTving.push(data[i]);
+            tvSeriesTving.push(data[i]);
             break;
           default:
             other.push(data[i]);
@@ -142,7 +142,7 @@ const allDataCreate = async (jsonData) => {
       JSON.stringify(tvSeriesWatcha)
     );
     fs.writeFileSync(
-      dataPath + "/movie/Tving_tvSeries.json",
+      dataPath + "/tvSeries/Tving_tvSeries.json",
       JSON.stringify(tvSeriesTving)
     );
     // Use fs.writeFileSync to create files synchronously

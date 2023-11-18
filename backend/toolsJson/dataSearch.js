@@ -1,6 +1,6 @@
 import isNull from "../tools/isNull.js";
 import { dataSelect } from "./dataSelect.js";
-import { textSplit } from "../tools/textSplit.js";
+import { textFilter } from "../tools/textFilter.js";
 // type1 : all or movie or tv or ranking
 // type2 : company or ranking type ( all, movie, tv )
 
@@ -11,7 +11,8 @@ export const title = (searchString, type1, type2) => {
   const data = dataSelect(type1, type2);
   // if (data.includes("long")) return data;
 
-  const searchData = textSplit(searchString);
+  const searchData = textFilter(searchString);
+  console.log(searchData);
   if (searchData === "")
     return "noData : Plz Input searchData exit:search.js > title";
 

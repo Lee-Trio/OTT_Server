@@ -1,6 +1,9 @@
 // essentials list
 import express, { json } from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
+const { PORT } = process.env;
 
 // swagger list
 import swaggerUi from "swagger-ui-express";
@@ -14,9 +17,7 @@ import checkRouter from "./routes/check.js";
 import testRouter from "./routes/test.js";
 import tempRouter from "./routes/temp.js";
 import dataInputRouter from "./routes/dataInput.js";
-
-// port number
-const port = 3000;
+import DBrouter from "./routes/DB.js";
 
 // default setting
 const app = express();
@@ -32,7 +33,8 @@ app.use("/check", checkRouter);
 app.use("/test", testRouter);
 app.use("/temp", tempRouter);
 app.use("/dataInput", dataInputRouter);
+app.use("/DB", DBrouter);
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log("Start Today Ott Server...");
 });
