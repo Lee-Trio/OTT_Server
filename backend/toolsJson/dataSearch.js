@@ -1,4 +1,4 @@
-import isNull from "./isNull.js";
+import isNull from "../tools/isNull.js";
 import { dataSelect } from "./dataSelect.js";
 import { textSplit } from "./textSplit.js";
 // type1 : all or movie or tv or ranking

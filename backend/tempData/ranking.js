@@ -1,4 +1,4 @@
-import isNull from "../toolsJson/isNull.js";
+import isNull from "../tools/isNull.js";
 
 import { rankingSplitCompany } from "../toolsJson/rankingSplitCompany.js";
 

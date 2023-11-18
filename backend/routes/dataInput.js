@@ -1,7 +1,7 @@
 import express from "express";
 import { dataBackup } from "../toolsJson/dataBackup.js";
 import { dataInput } from "../toolsJson/dataInput.js";
-import isNull from "../toolsJson/isNull.js";
+import isNull from "../tools/isNull.js";
 
 const router = express.Router();
 

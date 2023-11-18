@@ -1,4 +1,4 @@
-import isNull from "./isNull.js";
+import isNull from "../tools/isNull.js";
 import { dataSelect } from "./dataSelect.js";
 
 export const rankingSplitCompany = (company, type) => {
