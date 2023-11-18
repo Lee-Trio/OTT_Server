@@ -1,6 +1,6 @@
 import isNull from "../tools/isNull.js";
 import { dataSelect } from "./dataSelect.js";
-import { textSplit } from "./textSplit.js";
+import { textSplit } from "../tools/textSplit.js";
 // type1 : all or movie or tv or ranking
 // type2 : company or ranking type ( all, movie, tv )
 

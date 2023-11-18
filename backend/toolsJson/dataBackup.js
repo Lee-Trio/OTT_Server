@@ -1,6 +1,6 @@
 import fs from "fs";
 import archiver from "archiver";
-import { getTime } from "./getDate.js";
+import { getTime } from "../tools/getDate.js";
 
 export const dataBackup = async () => {
   const __dirname = "/home/projectpc/teamProject/backend/contents_data";
