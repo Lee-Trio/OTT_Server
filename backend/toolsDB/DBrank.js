@@ -37,7 +37,7 @@ const end = async () => {
 // data create
 export const DBCreate = async (data) => {
   data.ottString = data.ott;
-  data.ott = StringToOTTNumber(data.ott);
+  data.ott = await StringToOTTNumber(data.ott);
   try {
     const findOne = await rankingModel.findOne({
       title: data.title,
@@ -46,6 +46,7 @@ export const DBCreate = async (data) => {
     });
 
     if (!findOne) {
+      data.ott = ChangeInputOTTNumber(data.ott);
       const InputContent = new rankingModel(data);
       await InputContent.save();
       return "new Save : " + InputContent.title;
