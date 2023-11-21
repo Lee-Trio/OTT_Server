@@ -17,10 +17,10 @@ import { textFilter } from "../tools/textFilter.js";
 import { getSec } from "../tools/getDate.js";
 import { allDataCreate } from "../toolsJson/dataInput.js";
 import { dataBackup } from "../toolsJson/dataBackup.js";
-import { dataSelect } from "../toolsJson/dataSelect.js";
+// import { dataSelect } from "../toolsJson/dataSelect.js";
 
 // search limit
-const LIMIT = 20;
+const LIMIT = process.env.LIMIT;
 
 // CONNECT TO MONGODB SERVER => contentDB
 const contentDB = mongoose.createConnection(URI);
@@ -179,24 +179,44 @@ export const __delete = async (contents) => {
 
 export const __readString = async (searchString) => {
   const str = textFilter(searchString);
-  let regex = new RegExp(`^${str}`, "i");
+  const regex1 = new RegExp(`^${str}`, "i");
   try {
-    let results = await AllDataModel.find(
-      { searchTitle: regex },
+    const Array1 = await AllDataModel.find(
+      { searchTitle: regex1 },
       { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
     ).limit(LIMIT);
-    if (!results) {
+    if (!Array1) {
       return "Not Found Data";
-    } else if (results.length <= 20) {
-      regex = new RegExp(str, "i");
-      const addNumber = LIMIT - results.length;
-      results.push(
-        await AllDataModel.find(
-          { searchTitle: regex },
-          { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
-        ).limit(addNumber)
-      );
     }
+    if (Array1.length === LIMIT) return Array1;
+    const regex2 = new RegExp(`${str}`, "i");
+    const addNumber = LIMIT - Array1.length;
+    const Array2 = await AllDataModel.find(
+      { searchTitle: regex2 },
+      { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+    ).limit(addNumber);
+
+    // Array에서 _id와 함께 모든 속성을 포함하는 배열 생성
+    const set1 = Array1.map((item) => ({ ...item.toObject() }));
+    const set2 = Array2.map((item) => ({ ...item.toObject() }));
+
+    const combinedArray = [...set1, ...set2];
+
+    // acc 현재까지 누적된 배열
+    // current 배열의 현재 요소
+    const results = combinedArray.reduce((acc, current) => {
+      // 중복을 찾기 위해 현재 요소의 _id 값과 동일한 요소가 이미 누적 배열에 있는지 확인
+      const x = acc.find((item) => item._id === current._id);
+
+      if (!x) {
+        // 중복이 없는 경우 현재 요소를 누적 배열에 추가
+        return acc.concat([current]);
+      } else {
+        // 중복이 있는 경우 누적 배열을 그대로 유지
+        return acc;
+      }
+    }, []);
+
     return results;
   } catch (err) {
     throw err;
