@@ -8,6 +8,7 @@ dotenv.config();
 const URI = process.env.RANKINGDB;
 
 // tools import
+import { StringToOTTNumber, ChangeInputOTTNumber } from "../tools/ottNumber.js";
 import { getSec } from "../tools/getDate.js";
 import { rankDataCreate } from "../toolsJson/dataInput.js";
 import { dataBackup } from "../toolsJson/dataBackup.js";
@@ -35,6 +36,8 @@ const end = async () => {
 
 // data create
 export const DBCreate = async (data) => {
+  data.ottString = data.ott;
+  data.ott = StringToOTTNumber(data.ott);
   try {
     const findOne = await rankingModel.findOne({
       title: data.title,
@@ -59,7 +62,7 @@ export const DBRead = async (title, year, ott) => {
     const result = await rankingModel.findOne({
       title,
       year,
-      ott,
+      ottString: ott,
     });
 
     if (!result) {
