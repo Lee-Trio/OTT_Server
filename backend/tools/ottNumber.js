@@ -1,12 +1,12 @@
 export const StringToOTTNumber = (str) => {
-  switch (str) {
-    case "Disney Plus":
+  switch (str.toLowerCase()) {
+    case "disney Plus":
       return 1;
-    case "Watcha":
+    case "watcha":
       return 2;
-    case "TVING":
+    case "tving":
       return 4;
-    case "Netflix":
+    case "netflix":
       return 8;
   }
 };

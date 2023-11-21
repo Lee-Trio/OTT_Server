@@ -28,7 +28,7 @@ const dataDelete = async (type) => {
   }
 };
 
-const rankDataCreate = async (jsonData) => {
+export const rankDataCreate = async (jsonData) => {
   const dataPath = __dirname + "/contents_data/ranking";
   const jsonString = JSON.stringify(jsonData);
   const movieArray = new Array();

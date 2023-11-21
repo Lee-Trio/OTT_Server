@@ -49,16 +49,16 @@ const DBCreate = async (data) => {
       year: data.year,
     });
 
+    if (findOne.ott === 0) {
+      console.error("data error");
+      return "data error";
+    }
     if (!findOne) {
       data.ott = await ChangeInputOTTNumber(data.ott);
       const InputContent = new AllDataModel(data);
       await InputContent.save();
       return "new Save : " + InputContent.title;
     } else {
-      if (findOne.ott === 0) {
-        console.error("data error");
-        return "data error";
-      }
       if (insideNumber(findOne.ott, data.ott)) {
         return "includes : " + data.title;
       }
@@ -122,21 +122,6 @@ const DBUpdate = async (data) => {
 const DBDelete = async (data) => {
   try {
     await AllDataModel.deleteOne({ title: data.title, year: data.year });
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const __readID = async (searchID) => {
-  try {
-    const results = await AllDataModel.find(
-      { _id: searchID },
-      { createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
-    );
-    if (!results) {
-      return "Not Found Data";
-    }
-    return results;
   } catch (err) {
     throw err;
   }
@@ -217,6 +202,21 @@ export const __readString = async (searchString) => {
       }
     }, []);
 
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const __readID = async (searchID) => {
+  try {
+    const results = await AllDataModel.find(
+      { _id: searchID },
+      { createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+    );
+    if (!results) {
+      return "Not Found Data";
+    }
     return results;
   } catch (err) {
     throw err;

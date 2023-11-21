@@ -17,7 +17,8 @@ import checkRouter from "./routes/check.js";
 import testRouter from "./routes/test.js";
 import tempRouter from "./routes/temp.js";
 import dataInputRouter from "./routes/dataInput.js";
-import DBrouter from "./routes/DB.js";
+import DBMainRouter from "./routes/DBmain.js";
+import DBRankRouter from "./routes/DBrank.js";
 
 // default setting
 const app = express();
@@ -33,7 +34,8 @@ app.use("/check", checkRouter);
 app.use("/test", testRouter);
 app.use("/temp", tempRouter);
 app.use("/dataInput", dataInputRouter);
-app.use("/DB", DBrouter);
+app.use("/DBmain", DBMainRouter);
+app.use("/DBrank", DBRankRouter);
 
 app.listen(PORT, () => {
   console.log("Start Today Ott Server...");
