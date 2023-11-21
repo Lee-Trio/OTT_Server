@@ -4,10 +4,10 @@ import {
   __create,
   __delete,
   __update,
-  DBFinderID,
-  DBFinderString,
+  __readID,
+  __readString,
   DBOutputJson,
-} from "../toolsDB/DBtemp.js";
+} from "../toolsDB/DBmain.js";
 
 const router = express.Router();
 
@@ -40,8 +40,8 @@ router.get("/DBFinder", async (req, res) => {
   const searchID = req.query.id;
   const searchString = req.query.string;
   let result;
-  if (!searchID) result = await DBFinderString(searchString);
-  else result = await DBFinderID(searchID);
+  if (!searchID) result = await __readString(searchString);
+  else result = await __readID(searchID);
   res.send(result);
 });
 

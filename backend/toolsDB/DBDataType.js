@@ -14,6 +14,7 @@ export const AllDataSchema = new mongoose.Schema(
     year: { type: String },
     film_rating: { type: String },
     season: { type: String },
+    searchTitle: { type: String },
   },
   {
     timestamps: true,
@@ -37,6 +38,7 @@ export const selectSchema = (OTTType) => {
       year: { type: String },
       film_rating: { type: String },
       season: { type: String },
+      searchTitle: { type: String },
     },
     {
       timestamps: true,
@@ -61,6 +63,7 @@ export const rankingSchema = new mongoose.Schema(
     year: { type: String },
     film_rating: { type: String },
     season: { type: String },
+    searchTitle: { type: String },
   },
   {
     timestamps: true,

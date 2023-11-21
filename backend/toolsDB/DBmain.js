@@ -17,6 +17,10 @@ import { textFilter } from "../tools/textFilter.js";
 import { getSec } from "../tools/getDate.js";
 import { allDataCreate } from "../toolsJson/dataInput.js";
 import { dataBackup } from "../toolsJson/dataBackup.js";
+import { dataSelect } from "../toolsJson/dataSelect.js";
+
+// search limit
+const LIMIT = 20;
 
 // CONNECT TO MONGODB SERVER => contentDB
 const contentDB = mongoose.createConnection(URI);
@@ -37,8 +41,8 @@ const end = async () => {
 
 // data create
 const DBCreate = async (data) => {
-  //   console.log(data);
   data.ott = await StringToOTTNumber(data.ott);
+  data.searchTitle = textFilter(data.title);
   try {
     const findOne = await AllDataModel.findOne({
       title: data.title,
@@ -46,6 +50,7 @@ const DBCreate = async (data) => {
     });
 
     if (!findOne) {
+      data.ott = await ChangeInputOTTNumber(data.ott);
       const InputContent = new AllDataModel(data);
       await InputContent.save();
       return "new Save : " + InputContent.title;
@@ -61,7 +66,7 @@ const DBCreate = async (data) => {
       if (!findOne.img.includes(data.img)) findOne.img.push(data.img);
       findOne.ott += ChangeInputOTTNumber(data.ott);
       if (findOne.description.length < data.description.length)
-        result.description = data.description;
+        findOne.description = data.description;
       await findOne.save();
       return "Add : " + findOne.title;
     }
@@ -81,38 +86,6 @@ export const DBRead = async (title, year) => {
       return "Not Found DB";
     }
     return findOne;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const DBFinderString = async (searchString) => {
-  const str = textFilter(searchString);
-  const regex = new RegExp("릭", "i");
-  try {
-    const results = await AllDataModel.find(
-      { title: regex },
-      { createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
-    );
-    if (!results) {
-      return "Not Found Data";
-    }
-    return results;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const DBFinderID = async (searchID) => {
-  try {
-    const results = await AllDataModel.find(
-      { _id: searchID },
-      { createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
-    );
-    if (!results) {
-      return "Not Found Data";
-    }
-    return results;
   } catch (err) {
     throw err;
   }
@@ -154,6 +127,21 @@ const DBDelete = async (data) => {
   }
 };
 
+export const __readID = async (searchID) => {
+  try {
+    const results = await AllDataModel.find(
+      { _id: searchID },
+      { createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+    );
+    if (!results) {
+      return "Not Found Data";
+    }
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const DBOutputJson = async () => {
   try {
     const results = await AllDataModel.find();
@@ -167,23 +155,50 @@ export const DBOutputJson = async () => {
 
 export const __create = async (contents) => {
   for (let i = 0; i < contents.length; i++) {
-    DBCreate(contents[i]);
+    const result = await DBCreate(contents[i]);
+    console.log(result);
   }
   return 200;
 };
 
 export const __update = async (contents) => {
   for (let i = 0; i < contents.length; i++) {
-    DBUpdate(contents[i]);
+    const result = await DBUpdate(contents[i]);
+    console.log(result);
   }
   return 200;
 };
 
 export const __delete = async (contents) => {
   for (let i = 0; i < contents.length; i++) {
-    DBDelete(contents[i]);
+    const reuslt = await DBDelete(contents[i]);
+    console.log(result);
   }
   return 200;
 };
 
-// console.log(await DBFinderString("릭"));
+export const __readString = async (searchString) => {
+  const str = textFilter(searchString);
+  let regex = new RegExp(`^${str}`, "i");
+  try {
+    let results = await AllDataModel.find(
+      { searchTitle: regex },
+      { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+    ).limit(LIMIT);
+    if (!results) {
+      return "Not Found Data";
+    } else if (results.length <= 20) {
+      regex = new RegExp(str, "i");
+      const addNumber = LIMIT - results.length;
+      results.push(
+        await AllDataModel.find(
+          { searchTitle: regex },
+          { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+        ).limit(addNumber)
+      );
+    }
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
