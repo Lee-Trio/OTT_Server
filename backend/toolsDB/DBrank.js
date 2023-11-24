@@ -36,8 +36,10 @@ const end = async () => {
 
 // data create
 export const DBCreate = async (data) => {
+  if (!data) return "Not Found Data";
   data.ottString = data.ott;
-  data.ott = await StringToOTTNumber(data.ott);
+  data.ott = StringToOTTNumber(data.ott);
+  data.ott = ChangeInputOTTNumber(data.ott);
   try {
     const findOne = await rankingModel.findOne({
       title: data.title,
@@ -46,7 +48,6 @@ export const DBCreate = async (data) => {
     });
 
     if (!findOne) {
-      data.ott = ChangeInputOTTNumber(data.ott);
       const InputContent = new rankingModel(data);
       await InputContent.save();
       return "new Save : " + InputContent.title;
@@ -106,6 +107,13 @@ export const DBDelete = async (_id) => {
 };
 
 export const __create = async (data) => {
+  if (!data) return "Not Found Data";
+  try {
+    await rankingModel.deleteMany();
+    console.log(getSec() + " : " + "Ranking Data Delete");
+  } catch (err) {
+    throw err;
+  }
   for (let i = 0; i < data.length; i++) {
     const result = await DBCreate(data[i]);
     console.log(getSec() + " : " + result);
