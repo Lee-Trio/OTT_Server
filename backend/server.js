@@ -36,6 +36,11 @@ app.use("/temp", tempRouter);
 app.use("/dataInput", dataInputRouter);
 app.use("/DBmain", DBMainRouter);
 app.use("/DBrank", DBRankRouter);
+app.post("/testFunction", (req, res) => {
+  const data = req.body;
+  console.log(data);
+  res.send(200);
+});
 
 app.listen(PORT, () => {
   console.log("Start Today Ott Server...");

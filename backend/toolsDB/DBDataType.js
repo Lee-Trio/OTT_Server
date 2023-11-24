@@ -70,3 +70,50 @@ export const rankingSchema = new mongoose.Schema(
     collection: "RankingUnion",
   }
 );
+
+export const userSchema = new mongoose.Schema(
+  {
+    nickname: { type: String, required: true },
+    userID: { type: String, required: true },
+    userPW: { type: String, required: true },
+    userEmail: { type: String },
+    userPhone: { type: String },
+  },
+  {
+    timestamps: true,
+    collection: "userIndex",
+  }
+);
+
+export const userFavoriteSchema = new mongoose.Schema(
+  {
+    userID: { type: String, required: true },
+    contentIDs: { type: Array, required: true },
+  },
+  {
+    timestamps: true,
+    collection: "userFavorite",
+  }
+);
+
+export const userGoodSchema = new mongoose.Schema(
+  {
+    userID: { type: String, required: true },
+    contentIDs: { type: Array, required: true },
+  },
+  {
+    timestamps: true,
+    collection: "userGood",
+  }
+);
+
+export const userSeeSchema = new mongoose.Schema(
+  {
+    userID: { type: String, required: true },
+    contentIDs: { type: Array, required: true },
+  },
+  {
+    timestamps: true,
+    collection: "userSee",
+  }
+);

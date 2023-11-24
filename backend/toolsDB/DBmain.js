@@ -170,10 +170,10 @@ export const __readString = async (searchString) => {
       { searchTitle: regex1 },
       { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
     ).limit(LIMIT);
-    if (!Array1) {
+    if (Array1.length === 0) {
       return "Not Found Data";
     }
-    if (Array1.length === LIMIT) return Array1;
+    if (Array1.length === Number(LIMIT)) return Array1;
     const regex2 = new RegExp(`${str}`, "i");
     const addNumber = LIMIT - Array1.length;
     const Array2 = await AllDataModel.find(
@@ -181,28 +181,24 @@ export const __readString = async (searchString) => {
       { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
     ).limit(addNumber);
 
-    // Array에서 _id와 함께 모든 속성을 포함하는 배열 생성
-    const set1 = Array1.map((item) => ({ ...item.toObject() }));
-    const set2 = Array2.map((item) => ({ ...item.toObject() }));
+    console.log(LIMIT);
+    console.log(Array1.length);
+    console.log(addNumber);
+    console.log(Array2.length);
 
-    const combinedArray = [...set1, ...set2];
+    const combinedArray = [...Array1, ...Array2].reduce((acc, current) => {
+      const isDuplicate = acc.some(
+        (item) => item._id.toString() === current._id.toString()
+      );
 
-    // acc 현재까지 누적된 배열
-    // current 배열의 현재 요소
-    const results = combinedArray.reduce((acc, current) => {
-      // 중복을 찾기 위해 현재 요소의 _id 값과 동일한 요소가 이미 누적 배열에 있는지 확인
-      const x = acc.find((item) => item._id === current._id);
-
-      if (!x) {
-        // 중복이 없는 경우 현재 요소를 누적 배열에 추가
-        return acc.concat([current]);
-      } else {
-        // 중복이 있는 경우 누적 배열을 그대로 유지
-        return acc;
+      if (!isDuplicate) {
+        acc.push(current);
       }
+
+      return acc;
     }, []);
 
-    return results;
+    return combinedArray;
   } catch (err) {
     throw err;
   }

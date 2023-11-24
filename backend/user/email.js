@@ -40,7 +40,6 @@ export const getWelcomeTemplate = ({ userId, email }) => {
                 <div>가입일: ${createdAt}</div>
             </body>
         </html>`;
-
   return myTemplate;
 };
 

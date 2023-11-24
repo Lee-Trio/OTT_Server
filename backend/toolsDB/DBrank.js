@@ -12,7 +12,7 @@ import { StringToOTTNumber, ChangeInputOTTNumber } from "../tools/ottNumber.js";
 import { getSec } from "../tools/getDate.js";
 import { rankDataCreate } from "../toolsJson/dataInput.js";
 import { dataBackup } from "../toolsJson/dataBackup.js";
-import { dataSelect } from "../toolsJson/dataSelect.js";
+// import { dataSelect } from "../toolsJson/dataSelect.js";
 
 // search limit
 const LIMIT = process.env.LIMIT;
