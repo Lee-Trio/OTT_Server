@@ -19,6 +19,7 @@ import tempRouter from "./routes/temp.js";
 import dataInputRouter from "./routes/dataInput.js";
 import DBMainRouter from "./routes/DBmain.js";
 import DBRankRouter from "./routes/DBrank.js";
+import RecommendRouter from "./routes/recommend.js";
 
 // default setting
 const app = express();
@@ -36,11 +37,7 @@ app.use("/temp", tempRouter);
 app.use("/dataInput", dataInputRouter);
 app.use("/DBmain", DBMainRouter);
 app.use("/DBrank", DBRankRouter);
-app.post("/testFunction", (req, res) => {
-  const data = req.body;
-  console.log(data);
-  res.send(200);
-});
+app.use("/recommend", RecommendRouter);
 
 app.listen(PORT, () => {
   console.log("Start Today Ott Server...");

@@ -156,7 +156,7 @@ export const __update = async (contents) => {
 
 export const __delete = async (contents) => {
   for (let i = 0; i < contents.length; i++) {
-    const reuslt = await DBDelete(contents[i]);
+    const result = await DBDelete(contents[i]);
     console.log(result);
   }
   return 200;
@@ -165,26 +165,20 @@ export const __delete = async (contents) => {
 export const __readString = async (searchString) => {
   const str = textFilter(searchString);
   const regex1 = new RegExp(`^${str}`, "i");
+  const regex2 = new RegExp(`${str}`, "i");
+
   try {
     const Array1 = await AllDataModel.find(
       { searchTitle: regex1 },
       { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
     ).limit(LIMIT);
-    if (Array1.length === 0) {
-      return "Not Found Data";
-    }
     if (Array1.length === Number(LIMIT)) return Array1;
-    const regex2 = new RegExp(`${str}`, "i");
+
     const addNumber = LIMIT - Array1.length;
     const Array2 = await AllDataModel.find(
       { searchTitle: regex2 },
       { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
     ).limit(addNumber);
-
-    console.log(LIMIT);
-    console.log(Array1.length);
-    console.log(addNumber);
-    console.log(Array2.length);
 
     const combinedArray = [...Array1, ...Array2].reduce((acc, current) => {
       const isDuplicate = acc.some(

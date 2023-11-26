@@ -144,7 +144,12 @@ def get_recommendations_data(title, cosine_sim, df, n = 10):
 
 # 영화의 제목을 입력 받으면 코사인 유사도를 통해 가장 유사도가 높은 상위 10개의 영화 목록 반환
 def get_recommendations_wishlist(df, df2):
+    if df2.empty:
+        return
+
     df = set_element_three(df)
+    if len(df2) < 2:
+        df2 = df2 + df2
 
     # 각 열의 값을 문자열로 변환하여 해당 열에 덮어쓰기
     for col in df2.columns:
@@ -152,31 +157,33 @@ def get_recommendations_wishlist(df, df2):
 
     df2 = df2.drop_duplicates()
 
-    # df, df2 합침
+    # df, df2 합침 / result_df[0] = df2
     result_df = pd.concat([df2, df], ignore_index=True)
-    df = result_df
 
-    df['soup'] = df.apply(create_soup, axis=1)
+    result_df['soup'] = result_df.apply(create_soup, axis=1)
 
     tfidf = TfidfVectorizer()
-    tfidf_matrix = tfidf.fit_transform(df['soup'])
+    tfidf_matrix = tfidf.fit_transform(result_df['soup'])
 
     # 코사인 유사도 구하기
     cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
     # 영화 제목으로 인덱스를 찾기 위함, 중복 제거
-    indices = pd.Series(df.index, index=df['title']).drop_duplicates()
+    indices = pd.Series(result_df.index, index=result_df['title']).drop_duplicates()
 
     # 영화의 제목을 입력 받으면 코사인 유사도를 통해 가장 유사도가 높은 상위 10개의 영화 목록 반환
 
-    idx = indices[df['title'][0]]
+    idx = indices[result_df['title'][0]]
     sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:21]
-    contents_indices = [i[0] for i in sim_scores]
+
+
+    if len(sim_scores) > 1: 
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sim_scores[1:21]
+        contents_indices = [i[0] for i in sim_scores]
 
     # rec를 활용해 콘텐츠 데이터 저장
-    recommended_contents = [get_data(df, idx) for idx in contents_indices]
+    recommended_contents = [get_data(result_df, idx) for idx in contents_indices]
     return(recommended_contents)
 
 def get_data(df, idx):

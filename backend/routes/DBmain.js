@@ -41,7 +41,8 @@ router.get("/DBFinder", async (req, res) => {
   const searchString = req.query.string;
   let result;
   if (!searchID) result = await __readString(searchString);
-  else result = await __readID(searchID);
+  else if (!searchString) result = await __readID(searchID);
+  else result = "empty query";
   res.send(result);
 });
 

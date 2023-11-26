@@ -1,48 +1,60 @@
 import { spawn } from "child_process";
-import fs from "fs";
-import path from "path";
 
-const pythonScript = "./get_recommend_wishlist.py"; // 실제 경로로 수정
-const dfPath = "./datas/add_key_data.json"; // 실제 경로로 수정
-const df2Path = "./datas/wishlist.json"; // 실제 경로로 수정
+export const contentRecommend = async (jsonData) => {
+  try {
+    const pythonScript = "./recommendData/get_recommend_wishlist.py"; // 실제 경로로 수정
+    const df2Data = JSON.stringify(jsonData);
 
-// add_key_data.json 파일 내용 읽기
-const dfContent = fs.readFileSync(dfPath, "utf8");
+    // 환경 변수에 데이터 설정
+    process.env.JSON_DATA = df2Data;
 
-// wishlist.json 파일 내용 읽기
-const df2Content = fs.readFileSync(df2Path, "utf8");
+    // spawn 함수를 사용하여 Python 스크립트 실행
+    const pythonProcess = spawn("python3", [pythonScript]);
 
-// 매개변수를 파일에 저장
-const tempDir = "./temp"; // 적절한 임시 디렉토리 경로로 수정
-fs.writeFileSync(path.join(tempDir, "df.json"), dfContent, "utf8");
-fs.writeFileSync(path.join(tempDir, "df2.json"), df2Content, "utf8");
+    // // Python 스크립트 실행
+    // const pythonProcess = spawn("python3", [pythonScript], {
+    //   input: df2Data,
+    //   // input: jsonData,
+    //   encoding: "utf-8",
+    // });
 
-// Python 스크립트 실행
-const pythonProcess = spawn("python", [
-  pythonScript,
-  path.join(tempDir, "df.json"),
-  path.join(tempDir, "df2.json"),
-]);
+    let result = [];
 
-let result = "";
+    // Python 스크립트의 표준 출력 이벤트 처리
+    pythonProcess.stdout.on("data", (data) => {
+      const jsonData = JSON.parse(data.toString());
 
-// Python 스크립트의 표준 출력 이벤트 처리
-pythonProcess.stdout.on("data", (data) => {
-  result += data.toString();
-});
+      // 리스트 안에 또 다른 리스트가 있는 경우를 고려하여 평탄화
+      result.push(...jsonData.flat(1));
 
-// Python 스크립트의 표준 오류 이벤트 처리
-pythonProcess.stderr.on("data", (data) => {
-  console.error(`Python 스크립트 오류: ${data.toString().trim()}`);
-});
+      //   // parsedData가 배열이 아닌 경우 배열로 감싸주기
+      //   const jsonDataArray = Array.isArray(jsonData) ? jsonData : [jsonData];
+      //   // 리스트 안에 또 다른 리스트가 있는 경우를 고려하여 평탄화
+      //   result.push(...jsonDataArray.flat(1));
+      // });
+    });
 
-// Python 스크립트의 종료 이벤트 처리
-pythonProcess.on("close", (code) => {
-  if (code === 0) {
-    // Python 스크립트 실행이 성공하면 결과를 JSON으로 파싱하여 사용
-    const jsonResult = JSON.parse(result.trim());
-    console.log(`Python script output: ${jsonResult}`);
-  } else {
-    console.error(`Python 스크립트가 코드 ${code}로 종료되었습니다.`);
+    // Python 스크립트의 표준 오류 이벤트 처리
+    pythonProcess.stderr.on("data", (data) => {
+      console.error(`Python 스크립트 오류: ${data.toString().trim()}`);
+    });
+
+    // Python 스크립트의 종료 이벤트 처리를 다루기 위해 프로미스 반환
+    return new Promise((resolve, reject) => {
+      pythonProcess.on("close", (code) => {
+        if (code === 0) {
+          // Python 스크립트가 성공적으로 실행되었다면 평탄화된 결과로 resolve
+          resolve(result);
+        } else {
+          console.error(`Python 스크립트가 코드 ${code}로 종료되었습니다.`);
+          reject(`Python 스크립트가 코드 ${code}로 종료되었습니다.`);
+        }
+      });
+    });
+  } catch (error) {
+    // console.error("Error parsing JSON:", error);
+    console.error("Error:", error);
+    reject(error); // 에러를 호출하는 코드로 전파
+    // 에러 처리 로직
   }
-});
+};
