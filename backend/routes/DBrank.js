@@ -22,7 +22,7 @@ router.post("/__create", async (req, res) => {
 router.get("/__read", async (req, res) => {
   const company = req.query.company;
   const type = req.query.type;
-  const result = await DBRead(company, type);
+  const result = await __read(company, type);
   res.send(result);
 });
 

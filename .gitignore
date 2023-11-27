@@ -1,3 +1,5 @@
 node_modules
 .env
 frontend(test)
+private-key.pem
+certificate.pem

@@ -1,16 +1,22 @@
 export const StringToOTTNumber = (str) => {
-  switch (str) {
-    case "disney plus":
-      return 1;
-    case "watcha":
-      return 2;
-    case "tving":
-      return 4;
-    case "netflix":
-      return 8;
+  const type = typeof str;
+  if (type === "string") {
+    switch (str.toLowerCase()) {
+      case "disney plus":
+        return 1;
+      case "watcha":
+        return 2;
+      case "tving":
+        return 4;
+      case "netflix":
+        return 8;
+    }
+  } else if (type === "number") {
+    for (; str > 10; str /= 10);
+    if (str % 10) return str;
+  } else {
+    return "type error";
   }
-  for (; str > 10; str /= 10);
-  if (str % 10) return str;
 };
 
 export const ChangeInputOTTNumber = (str) => {

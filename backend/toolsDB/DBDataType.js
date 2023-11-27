@@ -75,7 +75,6 @@ export const rankingSchema = new mongoose.Schema(
 
 export const userSchema = new mongoose.Schema(
   {
-    nickname: { type: String, required: true },
     userID: { type: String, required: true },
     userPW: { type: String, required: true },
     userEmail: { type: String },
@@ -117,5 +116,16 @@ export const userSeeSchema = new mongoose.Schema(
   {
     timestamps: true,
     collection: "userSee",
+  }
+);
+
+export const userTempSchema = new mongoose.Schema(
+  {
+    userID: { type: String, required: true },
+    token: { type: Number, required: true },
+  },
+  {
+    timestamps: true,
+    collection: "userTemp",
   }
 );

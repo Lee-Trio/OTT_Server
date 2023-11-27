@@ -28,22 +28,37 @@ export const checkEmail = (email) => {
   return true;
 };
 
-export const getWelcomeTemplate = ({ userId, email }) => {
+export const getWelcomeTemplate = ({ userID, userEmail }) => {
   const createdAt = getToday();
   const myTemplate = `
         <html>
             <body>
-                <h1>${userId}님 가입을 환영합니다!!!</h1>
+                <h1>${userID}님 가입을 환영합니다!!!</h1>
                 <hr>
-                <div>아이디: ${userId}</div>
-                <div>이메일: ${email}</div>
+                <div>아이디: ${userID}</div>
+                <div>이메일: ${userEmail}</div>
                 <div>가입일: ${createdAt}</div>
             </body>
         </html>`;
+
   return myTemplate;
 };
 
-export const sendTemplateToEmail = async (email, token) => {
+export const getTokenTemplate = ({ email, token }) => {
+  const myTemplate = `
+        <html>
+            <body>
+                <h1>${email}님</h1>
+                <hr>
+                <h3>가입하기 위해 인증 번호를 입력해주세요.</h3>
+                <div>인증 번호: ${token}</div>
+            </body>
+        </html>`;
+
+  return myTemplate;
+};
+
+export const sendTemplateToEmail = async ({ userEmail, myTemplate }) => {
   const transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -54,8 +69,8 @@ export const sendTemplateToEmail = async (email, token) => {
 
   const res = await transport.sendMail({
     from: process.env.MY_EMAIL,
-    to: email,
+    to: userEmail,
     subject: "Today OTT 가입을 환영합니다.",
-    html: token,
+    html: myTemplate,
   });
 };

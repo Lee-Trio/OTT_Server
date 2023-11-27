@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto, { createPrivateKey } from "crypto";
 import dotenv from "dotenv";
 dotenv.config();
 
