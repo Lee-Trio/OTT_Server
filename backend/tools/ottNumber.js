@@ -1,6 +1,6 @@
 export const StringToOTTNumber = (str) => {
-  switch (str.toLowerCase()) {
-    case "disney Plus":
+  switch (str) {
+    case "disney plus":
       return 1;
     case "watcha":
       return 2;
@@ -9,6 +9,8 @@ export const StringToOTTNumber = (str) => {
     case "netflix":
       return 8;
   }
+  for (; str > 10; str /= 10);
+  if (str % 10) return str;
 };
 
 export const ChangeInputOTTNumber = (str) => {
@@ -22,6 +24,7 @@ export const ChangeInputOTTNumber = (str) => {
     case 8:
       return 8000;
   }
+  return str;
 };
 
 export const insideNumber = (num1, num2) => {

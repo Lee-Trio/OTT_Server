@@ -6,7 +6,7 @@ export const rankingSplitCompany = (company, type) => {
   const object = new Array();
 
   for (let i = 0; i < data.length; i++) {
-    if (data[i].ott.toLowerCase() === company.toLowerCase()) {
+    if (data[i].ottString.toLowerCase() === company.toLowerCase()) {
       object.push(data[i]);
     }
   }

@@ -27,7 +27,7 @@ router.get("/__read", async (req, res) => {
 });
 
 router.put("/__update", async (req, res) => {
-  const jsonData = req.body;
+  const [jsonData] = req.body;
   await __update(jsonData);
   res.send(200);
 });
@@ -39,7 +39,7 @@ router.delete("/__delete", async (req, res) => {
 });
 
 router.post("/DBCreate", async (req, res) => {
-  const jsonData = req.body;
+  const [jsonData] = req.body;
   await DBCreate(jsonData);
   res.send(200);
 });
@@ -48,11 +48,11 @@ router.get("/DBRead", async (req, res) => {
   const title = req.query.title;
   const year = req.query.year;
   const ott = req.query.ott;
-  const result = DBRead(title, year, ott);
+  const result = await DBRead(title, year, ott);
   res.send(result);
 });
 router.put("/DBUpdate", async (req, res) => {
-  const jsonData = req.body;
+  const [jsonData] = req.body;
   await DBUpdate(jsonData);
   res.send(200);
 });

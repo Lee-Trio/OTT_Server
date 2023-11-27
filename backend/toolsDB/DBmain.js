@@ -17,7 +17,7 @@ import { textFilter } from "../tools/textFilter.js";
 import { getSec } from "../tools/getDate.js";
 import { allDataCreate } from "../toolsJson/dataInput.js";
 import { dataBackup } from "../toolsJson/dataBackup.js";
-// import { dataSelect } from "../toolsJson/dataSelect.js";
+import { dataSelect } from "../toolsJson/dataSelect.js";
 
 // search limit
 const LIMIT = process.env.LIMIT;
@@ -40,27 +40,27 @@ const end = async () => {
 };
 
 // data create
-const DBCreate = async (data) => {
-  data.ott = await StringToOTTNumber(data.ott);
+export const DBCreate = async (data) => {
+  if (data.ottString) delete data.ottString;
+  if (data.rank) delete data.rank;
+  console.log(data);
+  console.log(data.title);
+  data.ott = StringToOTTNumber(data.ott);
   data.searchTitle = textFilter(data.title);
   try {
+    if (data.title.includes("[판매종료]")) return "[판매종료]";
     const findOne = await AllDataModel.findOne({
-      title: data.title,
+      searchTitle: data.searchTitle,
       year: data.year,
     });
-
-    if (findOne.ott === 0) {
-      console.error("data error");
-      return "data error";
-    }
     if (!findOne) {
-      data.ott = await ChangeInputOTTNumber(data.ott);
+      data.ott = ChangeInputOTTNumber(data.ott);
       const InputContent = new AllDataModel(data);
       await InputContent.save();
-      return "new Save : " + InputContent.title;
+      return getSec() + " new Save : " + InputContent.title;
     } else {
       if (insideNumber(findOne.ott, data.ott)) {
-        return "includes : " + data.title;
+        return getSec() + " includes : " + data.title;
       }
       findOne.href.push(data.href);
       if (!findOne.img.includes(data.img)) findOne.img.push(data.img);
@@ -68,7 +68,7 @@ const DBCreate = async (data) => {
       if (findOne.description.length < data.description.length)
         findOne.description = data.description;
       await findOne.save();
-      return "Add : " + findOne.title;
+      return getSec() + " Add : " + findOne.title;
     }
   } catch (err) {
     throw err;
@@ -77,10 +77,13 @@ const DBCreate = async (data) => {
 
 export const DBRead = async (title, year) => {
   try {
-    const findOne = await AllDataModel.findOne({
-      title,
-      year,
-    });
+    const findOne = await AllDataModel.findOne(
+      {
+        title,
+        year,
+      },
+      { createdAt: 0, updatedAt: 0, __v: 0 }
+    );
 
     if (!findOne) {
       return "Not Found DB";
@@ -212,3 +215,52 @@ export const __readID = async (searchID) => {
     throw err;
   }
 };
+
+export const DBAllRead = async () => {
+  try {
+    const result = await AllDataModel.find();
+    if (!result) {
+      return "Not Found DB";
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const DBAddKey = async (data) => {
+  try {
+    const UpdateContent = await AllDataModel.findOne({
+      title: data.title,
+      year: data.year,
+    });
+
+    if (!UpdateContent) {
+      return "Not Found DB";
+    }
+    UpdateContent.key = data.key;
+    UpdateContent.soup = data.soup;
+    await UpdateContent.save();
+    return getSec() + "updated : " + UpdateContent.title;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const allDrop = async () => {
+  try {
+    await AllDataModel.deleteMany({});
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ranking data => content data check
+// const result = async () => {
+//   const data = dataSelect("ranking", "all");
+//   const array = [];
+//   for (let i = 0; i < data.length; i++)
+//     array.push(await DBRead(data[i].title, data[i].year));
+//   return array;
+// };
+// console.log(await result());
