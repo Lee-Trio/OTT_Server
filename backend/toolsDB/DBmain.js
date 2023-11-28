@@ -43,9 +43,8 @@ const end = async () => {
 export const DBCreate = async (data) => {
   if (data.ottString) delete data.ottString;
   if (data.rank) delete data.rank;
-  console.log(data);
-  console.log(data.title);
   data.ott = StringToOTTNumber(data.ott);
+  if (data.ott === "error") return "error";
   data.searchTitle = textFilter(data.title);
   try {
     if (data.title.includes("[판매종료]")) return "[판매종료]";
@@ -59,7 +58,8 @@ export const DBCreate = async (data) => {
       await InputContent.save();
       return getSec() + " new Save : " + InputContent.title;
     } else {
-      if (insideNumber(findOne.ott, data.ott)) {
+      console.log(insideNumber(Number(findOne.ott), Number(data.ott)));
+      if (insideNumber(Number(findOne.ott), Number(data.ott))) {
         return getSec() + " includes : " + data.title;
       }
       findOne.href.push(data.href);

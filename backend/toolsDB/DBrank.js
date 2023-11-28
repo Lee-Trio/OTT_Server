@@ -40,6 +40,8 @@ const end = async () => {
 // data create
 export const DBCreate = async (data) => {
   if (!data) return "Not Found Data";
+  const rankNumber = data.rank;
+  const ottString = data.ott;
   // data.ottString = data.ott;
   // data.ott = StringToOTTNumber(data.ott);
   // data.ott = ChangeInputOTTNumber(data.ott);
@@ -49,24 +51,20 @@ export const DBCreate = async (data) => {
       year: data.year,
       ottString: data.ott,
     });
-
     if (!findOne) {
+      await DBmainCreate(data);
       const contentData = await DBmainRead(data.title, data.year);
       let result;
       if (contentData !== "Not Found DB") {
         result = { ...contentData._doc };
         delete result._id;
-        result.ottString = data.ott;
-        result.rank = data.rank;
-        // console.log(result.ottString);
+        result.ottString = ottString;
+        result.rank = rankNumber;
       } else {
         result = { ...data };
-        await DBmainCreate(data);
-        result.ottString = result.ott;
-        result.ott = StringToOTTNumber(data.ott);
-        result.ott = ChangeInputOTTNumber(result.ott);
+        result.ottString = ottString;
+        result.result.ott = ChangeInputOTTNumber(StringToOTTNumber(data.ott));
       }
-
       const InputContent = new rankingModel(result);
       await InputContent.save();
 
@@ -140,8 +138,9 @@ export const __create = async (data) => {
     throw err;
   }
   for (let i = 0; i < data.length; i++) {
+    // console.log("DBCreate > " + data[i]);
     const result = await DBCreate(data[i]);
-    console.log(result);
+    // console.log(result);
   }
   return getSec() + " : done";
 };

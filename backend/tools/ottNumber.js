@@ -17,6 +17,7 @@ export const StringToOTTNumber = (str) => {
   } else {
     return "type error";
   }
+  return "error";
 };
 
 export const ChangeInputOTTNumber = (str) => {
@@ -34,8 +35,9 @@ export const ChangeInputOTTNumber = (str) => {
 };
 
 export const insideNumber = (num1, num2) => {
-  for (let i = 0; i < 4; num1 /= 10, i++) {
-    if (num1 % 10 === num2) {
+  let number = num1;
+  for (let i = 0; i < 4; number /= 10, i++) {
+    if (Math.floor(number % 10) === num2) {
       return true;
     }
   }
