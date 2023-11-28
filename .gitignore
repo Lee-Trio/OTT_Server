@@ -3,3 +3,4 @@ node_modules
 frontend(test)
 private-key.pem
 certificate.pem
+securities

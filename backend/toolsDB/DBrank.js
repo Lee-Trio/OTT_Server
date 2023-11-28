@@ -70,9 +70,9 @@ export const DBCreate = async (data) => {
       const InputContent = new rankingModel(result);
       await InputContent.save();
 
-      return "new Save : " + data.title;
+      return getSec() + " : new Save : " + data.title;
     } else {
-      return "includes : " + findOne.title + " : " + findOne._id;
+      return getSec() + " : includes : " + findOne.title + " : " + findOne._id;
     }
   } catch (err) {
     throw err;
@@ -141,8 +141,9 @@ export const __create = async (data) => {
   }
   for (let i = 0; i < data.length; i++) {
     const result = await DBCreate(data[i]);
-    console.log(getSec() + " : " + result);
+    console.log(result);
   }
+  return getSec() + " : done";
 };
 
 export const __read = async (company, type) => {

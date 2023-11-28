@@ -1,6 +1,12 @@
 // DB import
 import mongoose from "mongoose";
-import { userTempSchema, userSchema } from "./DBDataType.js";
+import {
+  userTempSchema,
+  userSchema,
+  userFavoriteSchema,
+  userGoodSchema,
+  userSeeSchema,
+} from "./DBDataType.js";
 
 // securities import
 import bcrypt from "bcrypt";
@@ -20,6 +26,9 @@ userDB.on("error", (err) => {
 // schema and model define
 const tempModel = userDB.model("tempModel", userTempSchema);
 const userModel = userDB.model("userModel", userSchema);
+const favoriteModel = userDB.model("favoriteModel", userFavoriteSchema);
+const goodModel = userDB.model("goodModel", userGoodSchema);
+const seeModel = userDB.model("seeModel", userSeeSchema);
 
 // data create
 export const TokenCreate = async (user, token) => {
@@ -86,6 +95,151 @@ export const userFind = async ({ userID, userPW }) => {
       return "Not Found";
     }
     return findOne;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getFavorite = async ({ userID }) => {
+  try {
+    const results = await favoriteModel.find(
+      { userID },
+      { userID, createdAt, updatedAt }
+    );
+    if (!results) {
+      return "Not Found";
+    }
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getGood = async ({ userID }) => {
+  try {
+    const results = await goodModel.find(
+      { userID },
+      { userID, createdAt, updatedAt }
+    );
+    if (!results) {
+      return "Not Found";
+    }
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getSee = async ({ userID }) => {
+  try {
+    const results = await seeModel.find(
+      { userID },
+      { userID, createdAt, updatedAt }
+    );
+    if (!results) {
+      return "Not Found";
+    }
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const addFavorite = async ({ userID, data }) => {
+  try {
+    const results = await favoriteModel.find({ userID });
+    console.log(results);
+    if (!results.length === 0) {
+      const InputData = new favoriteModel({
+        userID,
+        contentIDs: [data],
+      });
+      console.log("InputData before save:", InputData); // 디버깅용 로그 추가
+
+      await InputData.save();
+      console.log("InputData after save:", InputData); // 디버깅용 로그 추가
+      return "add";
+    }
+    // results.contentsID.push(data);
+    // results.save();
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const addGood = async ({ userID, data }) => {
+  try {
+    const results = await goodModel.find({ userID });
+    if (!results) {
+      const InputUser = new goodModel({
+        userID,
+        contentIDs: data,
+      });
+      await InputUser.save();
+      return "add";
+    }
+    results.contentsID.push(data);
+    results.save();
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const addSee = async ({ userID, data }) => {
+  try {
+    const results = await seeModel.find({ userID });
+    if (!results) {
+      const InputUser = new seeModel({
+        userID,
+        contentIDs: data,
+      });
+      await InputUser.save();
+      return "add";
+    }
+    results.contentsID.push(data);
+    results.save();
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const removeFavorite = async ({ userID, data }) => {
+  try {
+    const results = await favoriteModel.find({ userID, contentsID: data });
+    if (!results) {
+      return "Not Found";
+    }
+    await favoriteModel.deleteOne({ userID, contentsID: data });
+    return "remove";
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const removeGood = async ({ userID, data }) => {
+  try {
+    const results = await goodModel.find({ userID, contentsID: data });
+    if (!results) {
+      return "Not Found";
+    }
+    await goodModel.deleteOne({ userID, contentsID: data });
+    return "remove";
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const removeSee = async ({ userID, data }) => {
+  try {
+    const results = await seeModel.find({ userID, contentsID: data });
+    if (!results) {
+      return "Not Found";
+    }
+    await seeModel.deleteOne({ userID, contentsID: data });
+    return "remove";
   } catch (err) {
     throw err;
   }

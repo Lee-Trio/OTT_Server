@@ -29,8 +29,8 @@ import RecommendRouter from "./routes/recommend.js";
 
 // default setting
 const app = express();
-const PRIVATE_KEY = fs.readFileSync("./private-key.pem", "utf8");
-const CERTIFICATE = fs.readFileSync("./certificate.pem", "utf8");
+const PRIVATE_KEY = fs.readFileSync("./securities/private-key.pem", "utf8");
+const CERTIFICATE = fs.readFileSync("./securities/certificate.pem", "utf8");
 app.use(express.json()); // 과거에는 bodyParser 사용
 app.use(cors());
 app.use(cookieParser());

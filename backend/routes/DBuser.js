@@ -17,6 +17,15 @@ import {
   TokenDelete,
   userCreate,
   userFind,
+  getFavorite,
+  getGood,
+  getSee,
+  addFavorite,
+  addGood,
+  addSee,
+  removeFavorite,
+  removeGood,
+  removeSee,
 } from "../toolsDB/DBuser.js";
 import bcrypt from "bcrypt";
 
@@ -56,7 +65,7 @@ router.post("/userRegister", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { userID, userPW } = req.body;
+  const { userID, userPW } = req.query;
   const user = await userFind({ userID });
 
   if (user && (await bcrypt.compare(userPW, user.userPW))) {
@@ -65,6 +74,12 @@ router.post("/login", async (req, res) => {
   } else {
     res.send("Invalid username or password.");
   }
+});
+
+router.get("/logincheck", async (req, res) => {
+  const user = req.session.userID;
+  console.log(req.session.userID);
+  res.send(user);
 });
 
 router.get("/logout", (req, res) => {
@@ -90,6 +105,95 @@ router.post("/userAuth", async (req, res) => {
     if (isTrue) res.send("인증완료");
     else res.send("인증실패");
   }
+});
+
+router.get("/favorite", (req, res) => {
+  const user = req.session.userID;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = getFavorite({ userID: user });
+  res.send(result);
+});
+
+router.post("/favorite/add", (req, res) => {
+  // 등록
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = addFavorite({ userID: user, data });
+  return res.send(result);
+});
+
+router.get("/favorite/remove", (req, res) => {
+  // 제거
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = removeFavorite({ userID: user, data });
+  res.send(result);
+});
+
+router.get("/good", (req, res) => {
+  const user = req.session.userID;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = getGood({ userID: user });
+  res.send(result);
+});
+
+router.post("/good/add", (req, res) => {
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = addGood({ userID: user, data });
+  res.send(result);
+});
+
+router.post("/good/remove", (req, res) => {
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = removeGood({ userID: user, data });
+  res.send(result);
+});
+
+router.get("/see", (req, res) => {
+  const user = req.session.userID;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = getSee({ userID: user });
+  res.send(result);
+});
+
+router.post("/see/add", (req, res) => {
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = addSee({ userID: user, data });
+  res.send(result);
+});
+
+router.post("/see/remove", (req, res) => {
+  const user = req.session.userID;
+  const data = req.body;
+  if (!user) {
+    res.send("You are not logged in");
+  }
+  const result = removeSee({ userID: user, data });
+  res.send(result);
 });
 
 const AuthCheck = async (user, number) => {
