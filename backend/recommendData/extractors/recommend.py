@@ -38,26 +38,31 @@ def get_key_values(data, f=0.05, r=0.4):
 
     data = data[f:r]
 
+    # 데이터 중복 제거
+    data = set(data)
+    data = list(data)
+
+    for d in data:
+        if len(d) <= 1:
+            data.remove(d)
     return data
 
 
 
 # 키 값 콘텐츠 데이터에 추가된 데이터 리턴
-def add_key(key_lst, df):
-    # okt 클래스 선언
-    okt = Okt()
-
-    # 데이터 프레임에 key 추가
+def add_key(key_list, df):
+        # 데이터 프레임에 key 추가
     df['key'] = ''
 
     idx = 0
     # 설명을 명사 단위로 분리하여 key값과 일치한 값이 있으면 추가
-    for desc in df['description']:
-        nouns_lst = ''
-        for d in okt.nouns(desc):
-            if d in key_lst:
-                nouns_lst = f'{nouns_lst} {d}'
-        df['key'][idx] = nouns_lst[1:]
+    for desciption in df['description']:
+        nouns_list = ''
+        desc_list = desciption.split(' ')
+        for desc in desc_list:
+            if desc in key_list:
+                nouns_list = f'{nouns_list} {desc}'
+        df['key'][idx] = nouns_list[1:]
         idx += 1
 
     # null값이 있으면 ''으로 채워넣음
@@ -68,21 +73,24 @@ def add_key(key_lst, df):
     for i in range(df.shape[0]):
         data = {
             "title": df['title'][i],
-            "href": df['href'][i],
-            "img": df['img'][i],
-            "ott": df['ott'][i],
-            "mt": df['mt'][i],
+            # "href": df['href'][i],
+            # "img": df['img'][i],
+            # "ott": df['ott'][i],
+            # "mt": df['mt'][i],
             "description": df['description'][i],
             "genre": df['genre'][i],
             "director": df['director'][i],
             "cast": df['cast'][i],
             "year": df['year'][i],
-            "film_rating": df['film_rating'][i],
-            "season": df['season'][i],
-            "duration": df['duration'][i],
+            # "film_rating": df['film_rating'][i],
+            # "season": df['season'][i],
             "key": df['key'][i]
         }
         results_data.append(data)
+
+        # file_root = './recommend/datas'
+        # with open(f'{file_root}/add_key_data.json', 'w', encoding="UTF-8") as f :
+        #     json.dump(data, f, indent=4, ensure_ascii=False)
 
     return results_data
 
@@ -144,12 +152,24 @@ def get_recommendations_data(title, cosine_sim, df, n = 10):
 
 # 영화의 제목을 입력 받으면 코사인 유사도를 통해 가장 유사도가 높은 상위 10개의 영화 목록 반환
 def get_recommendations_wishlist(df, df2):
-    if df2.empty:
-        return
-
     df = set_element_three(df)
+    wishlist_df = df2
     if len(df2) < 2:
         df2 = df2 + df2
+
+    file_root = './recommendData/datas'
+    with open(f'{file_root}/key_list.json', 'r', encoding='UTF8') as f:
+        key_list = json.load(f)
+
+    add_key_list = add_key(key_list, df2)
+
+    df2 = pd.DataFrame(add_key_list)
+    df2 = set_element_three(df2)
+    df2['soup'] = ''
+    idx = 0
+    for _ in df2['description']:
+        df2.loc[idx, 'soup'] = f"{df2['key'][idx]} {df2['cast'][idx]} {df2['director'][idx]} {df2['genre'][idx]}".strip()
+        idx += 1
 
     # 각 열의 값을 문자열로 변환하여 해당 열에 덮어쓰기
     for col in df2.columns:
@@ -157,34 +177,42 @@ def get_recommendations_wishlist(df, df2):
 
     df2 = df2.drop_duplicates()
 
-    # df, df2 합침 / result_df[0] = df2
+    # df, df2 합침
     result_df = pd.concat([df2, df], ignore_index=True)
-
-    result_df['soup'] = result_df.apply(create_soup, axis=1)
+    df = result_df
+    df['soup'] = df.apply(create_soup, axis=1)
 
     tfidf = TfidfVectorizer()
-    tfidf_matrix = tfidf.fit_transform(result_df['soup'])
+    tfidf_matrix = tfidf.fit_transform(df['soup'])
 
     # 코사인 유사도 구하기
     cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
     # 영화 제목으로 인덱스를 찾기 위함, 중복 제거
-    indices = pd.Series(result_df.index, index=result_df['title']).drop_duplicates()
+    indices = pd.Series(df.index, index=df['title']).drop_duplicates()
 
     # 영화의 제목을 입력 받으면 코사인 유사도를 통해 가장 유사도가 높은 상위 10개의 영화 목록 반환
 
-    idx = indices[result_df['title'][0]]
+    idx = indices[df['title'][0]]
     sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-
-    if len(sim_scores) > 1: 
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:21]
-        contents_indices = [i[0] for i in sim_scores]
+    sim_scores = sim_scores[1:len(df)+21]
+    contents_indices = [i[0] for i in sim_scores]
 
     # rec를 활용해 콘텐츠 데이터 저장
-    recommended_contents = [get_data(result_df, idx) for idx in contents_indices]
-    return(recommended_contents)
+    recommended_contents = [get_data(df, idx) for idx in contents_indices]
+    
+    result = []
+    for idx, contents in enumerate(recommended_contents):
+        title_series = contents['title']
+        if not title_series.isin(wishlist_df['title']).any():
+            result.append(contents)
+    if len(result) > 20:
+        return(result[:20])
+    else:
+        return(result)
+
 
 def get_data(df, idx):
   return df.iloc[[idx]]

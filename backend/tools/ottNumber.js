@@ -13,7 +13,7 @@ export const StringToOTTNumber = (str) => {
     }
   } else if (type === "number") {
     for (; str > 10; str /= 10);
-    if (str % 10) return str;
+    if (Math.floor(str % 10)) return Math.floor(str);
   } else {
     return "type error";
   }

@@ -3,8 +3,8 @@ from extractors.recommend import *
 # add_key_data.json, wishlist.json 파일을 이용하여 콘텐츠 추천
 # 추천된 콘텐츠를 recommended_contents.json 파일에 저장
 
-file_root = './datas'
-df = pd.read_json(f'{file_root}/add_key_data.json')
+file_root = './recommend/datas'
+df = pd.read_json(f'{file_root}/add_soup_data.json')
 df2 = pd.read_json(f'{file_root}/wishlist.json')
 
 recommended_contents = get_recommendations_wishlist(df, df2)
@@ -15,3 +15,5 @@ json_data = recommended_df.to_json(orient='records', lines=False, force_ascii=Fa
 
 with open(f'{file_root}/recommended_contents.json', 'w', encoding='utf-8') as f:
     f.write(json_data)
+
+print("완료")

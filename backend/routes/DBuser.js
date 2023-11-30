@@ -5,13 +5,13 @@ import {
   getWelcomeTemplate as getWelcomeTemplateEmail,
   checkEmail,
   sendTemplateToEmail,
-} from "../user/email.js";
+} from "../toolsUser/email.js";
 import {
   getTokenTemplate as getTokenTemplateSMS,
   getWelcomeTemplate as getWelcomeTemplateSMS,
   checkPhone,
   sendTokenToSMS,
-} from "../user/phone.js";
+} from "../toolsUser/phone.js";
 import {
   TokenCreate,
   TokenDelete,

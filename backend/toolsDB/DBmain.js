@@ -50,7 +50,7 @@ export const DBCreate = async (data) => {
     if (data.title.includes("[판매종료]")) return "[판매종료]";
     const findOne = await AllDataModel.findOne({
       searchTitle: data.searchTitle,
-      year: data.year,
+      // year: data.year,
     });
     if (!findOne) {
       data.ott = ChangeInputOTTNumber(data.ott);
@@ -58,12 +58,27 @@ export const DBCreate = async (data) => {
       await InputContent.save();
       return getSec() + " new Save : " + InputContent.title;
     } else {
-      console.log(insideNumber(Number(findOne.ott), Number(data.ott)));
       if (insideNumber(Number(findOne.ott), Number(data.ott))) {
         return getSec() + " includes : " + data.title;
       }
-      findOne.href.push(data.href);
-      if (!findOne.img.includes(data.img)) findOne.img.push(data.img);
+      // 문제가 여기임 간단함 그냥 넣는걸로 햇고
+      // 비교도 단순 비교라
+      // 여기 for 돌리면서 비교하면서 넣며 ㄴ될듯
+      let isInner;
+      for (let i = 0; i < findOne.href.length; i++) {
+        if (findOne.href[i] === data.href) isInner = true;
+      }
+      if (!isInner) {
+        findOne.href.push(data.href);
+        isInner = false;
+      }
+      for (let i = 0; i < findOne.img.length; i++) {
+        if (findOne.img[i] === data.img) isInner = true;
+      }
+      if (!isInner) {
+        findOne.img.push(data.img);
+        isInner = false;
+      }
       findOne.ott += ChangeInputOTTNumber(data.ott);
       if (findOne.description.length < data.description.length)
         findOne.description = data.description;
@@ -75,12 +90,13 @@ export const DBCreate = async (data) => {
   }
 };
 
-export const DBRead = async (title, year) => {
+// export const DBRead = async (title, year) => {
+export const DBRead = async (title) => {
   try {
     const findOne = await AllDataModel.findOne(
       {
         title,
-        year,
+        // year,
       },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     );
@@ -89,6 +105,19 @@ export const DBRead = async (title, year) => {
       return "Not Found DB";
     }
     return findOne;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const DBReadAll = async () => {
+  try {
+    const findAll = await AllDataModel.find();
+
+    if (!findAll) {
+      return "Not Found DB";
+    }
+    return findAll;
   } catch (err) {
     throw err;
   }
@@ -104,9 +133,11 @@ const DBUpdate = async (data) => {
     if (!UpdateContent) {
       return "Not Found DB";
     }
+    console.log(StringToOTTNumber(data.ott));
+
     UpdateContent.href = data.href;
     UpdateContent.img = data.img;
-    UpdateContent.ott = data.ott;
+    UpdateContent.ott = StringToOTTNumber(data.ott); // ott number
     UpdateContent.mt = data.mt;
     UpdateContent.description = data.description;
     UpdateContent.genre = data.genre;
@@ -115,6 +146,8 @@ const DBUpdate = async (data) => {
     UpdateContent.running_time = data.running_time;
     UpdateContent.film_rating = data.film_rating;
     UpdateContent.season = data.season;
+    // UpdateContent.searchTitle = textFilter(data.title);
+
     await UpdateContent.save();
     return getSec() + "updated : " + UpdateContent.title;
   } catch (err) {
@@ -163,6 +196,19 @@ export const __delete = async (contents) => {
     console.log(result);
   }
   return 200;
+};
+
+export const __readOneString = async (searchString) => {
+  const str = textFilter(searchString);
+  try {
+    const data = await AllDataModel.find(
+      { searchTitle: str },
+      { searchTitle: 0, createdAt: 0, updatedAt: 0, __v: 0 } // 프로젝션 객체
+    );
+    return data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const __readString = async (searchString) => {
@@ -230,9 +276,10 @@ export const DBAllRead = async () => {
 
 export const DBAddKey = async (data) => {
   try {
+    console.log("update > " + data.title);
     const UpdateContent = await AllDataModel.findOne({
       title: data.title,
-      year: data.year,
+      // year: data.year,
     });
 
     if (!UpdateContent) {
@@ -264,3 +311,10 @@ export const allDrop = async () => {
 //   return array;
 // };
 // console.log(await result());
+
+// // 모든 데이터 날림
+
+// // all_data.json의 데이터 추가 // db data 다 날리고 하면 됨
+// await allDrop();
+// const result = await __create(dataSelect("all"));
+// console.log(result); // 200

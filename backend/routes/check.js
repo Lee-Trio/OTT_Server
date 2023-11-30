@@ -3,6 +3,9 @@ import { dataSelect } from "../toolsJson/dataSelect.js";
 
 const router = express.Router();
 
+// json 파일을 돌려주는 js 파일이다.
+// /check/'원하는 종류'를 입력하면 정리가 되어있는 파일을 열어서 돌려줌
+
 // all data output
 router.get("/all_data", (_, res) => {
   const all_data = dataSelect("all");

@@ -1,6 +1,7 @@
 // DB import
 import mongoose from "mongoose";
 import { rankingSchema } from "./DBDataType.js";
+import { __readOneString } from "../toolsDB/DBmain.js";
 
 // securities import
 import dotenv from "dotenv";
@@ -51,20 +52,19 @@ export const DBCreate = async (data) => {
       year: data.year,
       ottString: data.ott,
     });
+    await DBmainCreate(data);
     if (!findOne) {
-      await DBmainCreate(data);
       const contentData = await DBmainRead(data.title, data.year);
       let result;
       if (contentData !== "Not Found DB") {
         result = { ...contentData._doc };
         delete result._id;
-        result.ottString = ottString;
-        result.rank = rankNumber;
       } else {
         result = { ...data };
-        result.ottString = ottString;
-        result.result.ott = ChangeInputOTTNumber(StringToOTTNumber(data.ott));
+        result.ott = ChangeInputOTTNumber(StringToOTTNumber(data.ott));
       }
+      result.ottString = ottString;
+      result.rank = rankNumber;
       const InputContent = new rankingModel(result);
       await InputContent.save();
 
@@ -139,6 +139,7 @@ export const __create = async (data) => {
   }
   for (let i = 0; i < data.length; i++) {
     // console.log("DBCreate > " + data[i]);
+    console.log("DBCreate > " + data[i].title, data[i].ott, data[i].rank);
     const result = await DBCreate(data[i]);
     // console.log(result);
   }
@@ -148,6 +149,9 @@ export const __create = async (data) => {
 export const __read = async (company, type) => {
   try {
     let results;
+    // const data = await __readOneString(str);
+    //           // console.log(data);
+    //           arr.push(data);
     if (!type)
       results = await rankingModel.find(
         {
@@ -167,7 +171,24 @@ export const __read = async (company, type) => {
     if (!results) {
       return "Not Found DB";
     }
-    return results;
+
+    let arr = [];
+
+    for (let i = 0; i < results.length; i++) {
+      const str = results[i].title;
+
+      const data = await __readOneString(str);
+      if (data[0] && "title" in data[0]) {
+        // console.log(data[0]["title"]);
+        data[0].rank = results.rank;
+      } else {
+        // console.error("data[0] or 'title' is undefined or null");
+        data[0] = results[i];
+      }
+      arr.push(data[0]);
+    }
+    return arr;
+    // return results;
   } catch (err) {
     throw err;
   }

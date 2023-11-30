@@ -1,4 +1,6 @@
 import { spawn } from "child_process";
+import { __readString, __readOneString } from "../toolsDB/DBmain.js";
+import { textFilter } from "../tools/textFilter.js";
 
 export const contentRecommend = async (jsonData) => {
   try {
@@ -10,13 +12,6 @@ export const contentRecommend = async (jsonData) => {
 
     // spawn 함수를 사용하여 Python 스크립트 실행
     const pythonProcess = spawn("python3", [pythonScript]);
-
-    // // Python 스크립트 실행
-    // const pythonProcess = spawn("python3", [pythonScript], {
-    //   input: df2Data,
-    //   // input: jsonData,
-    //   encoding: "utf-8",
-    // });
 
     let result = [];
 
@@ -40,11 +35,32 @@ export const contentRecommend = async (jsonData) => {
     });
 
     // Python 스크립트의 종료 이벤트 처리를 다루기 위해 프로미스 반환
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       pythonProcess.on("close", (code) => {
         if (code === 0) {
           // Python 스크립트가 성공적으로 실행되었다면 평탄화된 결과로 resolve
-          resolve(result);
+
+          let arr = [];
+          let promiseChain = Promise.resolve(); // 초기 Promise를 만듦
+
+          for (let i = 0; i < result.length; i++) {
+            // console.log(result[i].title);
+            const str = textFilter(result[i].title);
+
+            // Promise 체인에 새로운 Promise를 추가
+            promiseChain = promiseChain.then(async () => {
+              const data = await __readOneString(str);
+              // console.log(data);
+              arr.push(data);
+              // console.log(data[0]);
+            });
+          }
+
+          // 모든 Promise가 완료된 후에 최종적으로 resolve
+          promiseChain.then(() => {
+            // console.log(arr);
+            resolve(arr);
+          });
         } else {
           console.error(`Python 스크립트가 코드 ${code}로 종료되었습니다.`);
           reject(`Python 스크립트가 코드 ${code}로 종료되었습니다.`);

@@ -60,12 +60,18 @@ app.use("/temp", tempRouter);
 app.use("/dataInput", dataInputRouter);
 app.use("/DBmain", DBMainRouter);
 app.use("/DBrank", DBRankRouter);
-app.use("/recommend", RecommendRouter);
 app.use("/DBuser", DBUserRouter);
+app.use("/recommend", RecommendRouter);
+app.get("/connect", (_, res) => {
+  res.send("hello World");
+});
 
 // app.listen(PORT, () => {
 //   console.log("Start Today Ott Server...");
 // });
-httpsServer.listen(PORT, () => {
-  console.log("Start Today Ott HTTPS Server with Cloudflare...");
-});
+httpsServer.listen(
+  PORT,
+  setTimeout(() => {
+    console.log("Start Today Ott HTTPS Server with Cloudflare...");
+  }, 1000)
+);
