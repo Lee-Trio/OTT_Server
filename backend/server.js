@@ -63,7 +63,7 @@ app.use("/DBrank", DBRankRouter);
 app.use("/DBuser", DBUserRouter);
 app.use("/recommend", RecommendRouter);
 app.get("/connect", (_, res) => {
-  res.send("hello World");
+  res.send("apple");
 });
 
 // app.listen(PORT, () => {
