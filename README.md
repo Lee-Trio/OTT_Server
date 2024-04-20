@@ -6,6 +6,7 @@ ToDayOTT는 사용자 맞춤 OTT서비스를 목적으로 합니다.
 1. OTT 컨탠츠를 빠르게 찾기
 2. 사용자 맞춤 OTT 서비스 추천
 3. 사용자 맞춤 OTT 컨탠츠 추천
+![TodayOTT](https://github.com/Lee-Trio/OTT_Server/assets/109287950/bb9347a5-ed7f-4e7b-9709-eccb787cfae9)
 
 ## 개발 환경
 - Ubuntu 22.04.04 LTS
